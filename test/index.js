@@ -634,31 +634,42 @@ test('math-tex', async function (t) {
     }
   )
 
-  await t.test(
-    'should support math (flow) w/ two dollar sign',
-    async function () {
-      assert.equal(
-        micromark('$$\na\n$$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<div class="math math-display">' +
-          renderToString('a', {displayMode: true}) +
-          '</div>'
-      )
-    }
-  )
+  await t.test('should support math (flow)', async function () {
+    assert.equal(
+      micromark('\\[\na\n\\]', {
+        extensions: [math()],
+        htmlExtensions: [mathHtml()]
+      }),
+      '<div class="math math-display">' +
+        renderToString('a', {displayMode: true}) +
+        '</div>'
+    )
+  })
+
+  await t.test('should support math (flow) w/o blanks', async function () {
+    assert.equal(
+      micromark('\\[a\\]', {
+        extensions: [math()],
+        htmlExtensions: [mathHtml()]
+      }),
+      '<div class="math math-display">' +
+        renderToString('a', {displayMode: true}) +
+        '</div>'
+    )
+  })
 
   await t.test(
-    'should support math (flow) w/ three dollar sign',
+    'should support nested math by using more dollars outside of math (flow)',
     async function () {
       assert.equal(
-        micromark('$$$\na\n$$$', {
+        micromark('\\[\n\\raisebox{0.25em}{$\\frac a b$}\n\\]', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
         '<div class="math math-display">' +
-          renderToString('a', {displayMode: true}) +
+          renderToString('\\raisebox{0.25em}{$\\frac a b$}', {
+            displayMode: true
+          }) +
           '</div>'
       )
     }
@@ -666,7 +677,7 @@ test('math-tex', async function (t) {
 
   await t.test('should support math (flow) w/o content', async function () {
     assert.equal(
-      micromark('$$\n$$', {
+      micromark('\\[\n\\]', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -680,7 +691,7 @@ test('math-tex', async function (t) {
     'should support math (flow) w/o closing fence',
     async function () {
       assert.equal(
-        micromark('$$\na', {
+        micromark('\\[\na', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -695,42 +706,12 @@ test('math-tex', async function (t) {
     'should support math (flow) w/o closing fence ending at an EOL',
     async function () {
       assert.equal(
-        micromark('$$\na\n', {
+        micromark('\\[\na\n', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
         '<div class="math math-display">' +
           renderToString('a', {displayMode: true}) +
-          '</div>'
-      )
-    }
-  )
-
-  await t.test(
-    'should support math (flow) w/ a meta string',
-    async function () {
-      assert.equal(
-        micromark('$$asd &amp; \\& asd\na\n$$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<div class="math math-display">' +
-          renderToString('a', {displayMode: true}) +
-          '</div>'
-      )
-    }
-  )
-
-  await t.test(
-    'should not support math (flow) w/ a dollar sign in the meta string',
-    async function () {
-      assert.equal(
-        micromark('$$asd$asd\na\n$$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<p>$$asd$asd\na</p>\n<div class="math math-display">' +
-          renderToString('', {displayMode: true}) +
           '</div>'
       )
     }
@@ -740,11 +721,11 @@ test('math-tex', async function (t) {
     'should not support math (flow) w/ content on the closing fence',
     async function () {
       assert.throws(function () {
-        micromark('$$\na\n$$ b', {
+        micromark('\\[\na\n\\] b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         })
-      }, /KaTeX parse error: Can't use function '\$' in math mode at position 3/)
+      }, /KaTeX parse error: Can't use function '\\]' in math mode at position 3/)
     }
   )
 
@@ -752,7 +733,7 @@ test('math-tex', async function (t) {
     'should support whitespace on the closing fence',
     async function () {
       assert.equal(
-        micromark('$$\na\n$$  ', {
+        micromark('\\[\na\n\\]  ', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -767,7 +748,7 @@ test('math-tex', async function (t) {
     'should strip the prefix of the opening fence from content lines',
     async function () {
       assert.equal(
-        micromark('  $$\n\ta\n  b\n c\nd\n$$', {
+        micromark('  \\[\n\ta\n  b\n c\nd\n\\]', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -782,7 +763,7 @@ test('math-tex', async function (t) {
     'should strip arbitrary length prefix from closing fence line (codeIndented disabled)',
     async function () {
       assert.equal(
-        micromark('      $$\n      a\n          $$', {
+        micromark('      \\[\n      a\n          \\]', {
           extensions: [math(), {disable: {null: ['codeIndented']}}],
           htmlExtensions: [mathHtml()]
         }),
@@ -797,7 +778,7 @@ test('math-tex', async function (t) {
     'should support math (flow) in a block quote',
     async function () {
       assert.equal(
-        micromark('> $$\n> a\n> $$\n> b', {
+        micromark('> \\[\n> a\n> \\]\n> b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -815,7 +796,7 @@ test('math-tex', async function (t) {
     'should support math (flow) in a list (item)',
     async function () {
       assert.equal(
-        micromark('* $$\n  a\n  $$\n  b', {
+        micromark('* \\[\n  a\n  \\]\n  b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -867,7 +848,7 @@ test('math-tex', async function (t) {
 
   await t.test('should not support laziness (1)', async function () {
     assert.equal(
-      micromark('> $$\na\n$$', {
+      micromark('> \\[\na\n\\[', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -881,7 +862,7 @@ test('math-tex', async function (t) {
 
   await t.test('should not support laziness (2)', async function () {
     assert.equal(
-      micromark('> $$\n> a\n$$', {
+      micromark('> \\[\n> a\n\\[', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -895,7 +876,7 @@ test('math-tex', async function (t) {
 
   await t.test('should not support laziness (3)', async function () {
     assert.equal(
-      micromark('a\n> $$', {
+      micromark('a\n> \\[', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),

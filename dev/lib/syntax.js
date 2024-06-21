@@ -6,6 +6,7 @@
 import {codes} from 'micromark-util-symbol'
 import {mathFlow} from './math-flow.js'
 import {mathText} from './math-text.js'
+import {mathTexFlow} from './math-tex-flow.js'
 import {mathTexText} from './math-tex-text.js'
 
 /**
@@ -19,7 +20,7 @@ import {mathTexText} from './math-tex-text.js'
  */
 export function math(options) {
   return {
-    flow: {[codes.dollarSign]: mathFlow},
+    flow: {[codes.dollarSign]: mathFlow, [codes.backslash]: mathTexFlow},
     text: {
       [codes.dollarSign]: mathText(options),
       [codes.backslash]: mathTexText
