@@ -492,18 +492,11 @@ test('math', async function (t) {
 })
 
 test('math-tex', async function (t) {
-  await t.test('should expose the public api', async function () {
-    assert.deepEqual(
-      Object.keys(await import('micromark-extension-math')).sort(),
-      ['math', 'mathHtml']
-    )
-  })
-
   await t.test(
-    'should support one, two, or more dollars by default',
+    'should support backslash-parentheses or brackets by default',
     async function () {
       assert.equal(
-        micromark('$a$, $$b$$, $$$c$$$', {
+        micromark('\\(a\\), $$b$$', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -511,66 +504,33 @@ test('math-tex', async function (t) {
           renderToString('a') +
           '</span>, <span class="math math-inline">' +
           renderToString('b') +
-          '</span>, <span class="math math-inline">' +
-          renderToString('c') +
           '</span></p>'
       )
     }
   )
 
   await t.test(
-    'should support two or more dollars w/ `singleDollarTextMath: false`, but not one',
+    'should support an escaped backslash sign which would otherwise open math',
     async function () {
       assert.equal(
-        micromark('$a$, $$b$$, $$$c$$$', {
-          extensions: [math({singleDollarTextMath: false})],
+        micromark('a \\\\(b\\)', {
+          extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
-        '<p>$a$, <span class="math math-inline">' +
-          renderToString('b') +
-          '</span>, <span class="math math-inline">' +
-          renderToString('c') +
-          '</span></p>'
+        '<p>a \\(b)</p>'
       )
     }
   )
 
   await t.test(
-    'should support an escaped dollar sign which would otherwise open math',
+    'should support an escaped backslash sign which would otherwise close math',
     async function () {
       assert.equal(
-        micromark('a \\$b$', {
+        micromark('a \\(b\\\\)', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
-        '<p>a $b$</p>'
-      )
-    }
-  )
-
-  await t.test(
-    'should not support escaped dollar signs in math (text)',
-    async function () {
-      assert.throws(function () {
-        micromark('a $b\\$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        })
-      }, /KaTeX parse error: Unexpected character: '\\' at position 2/)
-    }
-  )
-
-  await t.test(
-    'should support math (text) right after an escaped dollar sign',
-    async function () {
-      assert.equal(
-        micromark('a \\$$b$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<p>a $<span class="math math-inline">' +
-          renderToString('b') +
-          '</span></p>'
+        '<p>a (b\\)</p>'
       )
     }
   )
@@ -579,7 +539,7 @@ test('math-tex', async function (t) {
     'should support a single dollar in math (text) w/ padding and two dollar signs',
     async function () {
       assert.throws(function () {
-        micromark('a $$ $ $$', {
+        micromark('a \\( $ \\)', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         })
@@ -591,7 +551,7 @@ test('math-tex', async function (t) {
     'should support nested math by using more dollars outside of math (text)',
     async function () {
       assert.equal(
-        micromark('a $$\\raisebox{0.25em}{$\\frac a b$}$$ b', {
+        micromark('a \\(\\raisebox{0.25em}{$\\frac a b$}\\) b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -603,15 +563,15 @@ test('math-tex', async function (t) {
   )
 
   await t.test(
-    'should support an “escaped” dollar right on the KaTeX level, not on the Markdown level',
+    'should support an “escaped” backslash right on the KaTeX level, not on the Markdown level',
     async function () {
       assert.equal(
-        micromark('a $$ \\$ $$ b', {
+        micromark('a \\( \\\\) \\) b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
         '<p>a <span class="math math-inline">' +
-          renderToString('\\$') +
+          renderToString('\\\\)') +
           '</span> b</p>'
       )
     }
@@ -633,40 +593,10 @@ test('math-tex', async function (t) {
   )
 
   await t.test(
-    'should support math (text) w/ one dollar sign',
+    'should support math (text) w/ parenthesis sign',
     async function () {
       assert.equal(
-        micromark('a $b$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<p>a <span class="math math-inline">' +
-          renderToString('b') +
-          '</span></p>'
-      )
-    }
-  )
-
-  await t.test(
-    'should support math (text) w/ two dollar signs',
-    async function () {
-      assert.equal(
-        micromark('a $$b$$', {
-          extensions: [math()],
-          htmlExtensions: [mathHtml()]
-        }),
-        '<p>a <span class="math math-inline">' +
-          renderToString('b') +
-          '</span></p>'
-      )
-    }
-  )
-
-  await t.test(
-    'should support math (text) w/ three dollar signs',
-    async function () {
-      assert.equal(
-        micromark('a $$$b$$$', {
+        micromark('a \\(b\\)', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -679,7 +609,7 @@ test('math-tex', async function (t) {
 
   await t.test('should support EOLs in math', async function () {
     assert.equal(
-      micromark('a $b\nc\rd\r\ne$ f', {
+      micromark('a \\(b\nc\rd\r\ne\\) f', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -903,7 +833,7 @@ test('math-tex', async function (t) {
 
   await t.test('should support `<`', async function () {
     assert.equal(
-      micromark('a $\\sum_{\\substack{0<i<m\\\\0<j<n}}$ b', {
+      micromark('a \\(\\sum_{\\substack{0<i<m\\\\0<j<n}}\\) b', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -915,7 +845,7 @@ test('math-tex', async function (t) {
 
   await t.test('should support `"`', async function () {
     assert.equal(
-      micromark('a $\\text{a \\"{a} c}$ b', {
+      micromark('a \\(\\text{a \\"{a} c}\\) b', {
         extensions: [math()],
         htmlExtensions: [mathHtml()]
       }),
@@ -927,7 +857,7 @@ test('math-tex', async function (t) {
 
   await t.test('should support options', async function () {
     assert.equal(
-      micromark('a $$ $ $$', {
+      micromark('a \\( $ \\)', {
         extensions: [math()],
         htmlExtensions: [mathHtml({throwOnError: false})]
       }),

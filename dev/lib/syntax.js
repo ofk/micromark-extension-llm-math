@@ -6,6 +6,7 @@
 import {codes} from 'micromark-util-symbol'
 import {mathFlow} from './math-flow.js'
 import {mathText} from './math-text.js'
+import {mathTexText} from './math-tex-text.js'
 
 /**
  * Create an extension for `micromark` to enable math syntax.
@@ -19,6 +20,9 @@ import {mathText} from './math-text.js'
 export function math(options) {
   return {
     flow: {[codes.dollarSign]: mathFlow},
-    text: {[codes.dollarSign]: mathText(options)}
+    text: {
+      [codes.dollarSign]: mathText(options),
+      [codes.backslash]: mathTexText
+    }
   }
 }
