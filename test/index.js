@@ -496,7 +496,7 @@ test('math-tex', async function (t) {
     'should support backslash-parentheses or brackets by default',
     async function () {
       assert.equal(
-        micromark('\\(a\\), $$b$$', {
+        micromark('\\(a\\), \\[b\\]', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),
@@ -581,7 +581,7 @@ test('math-tex', async function (t) {
     'should support padding with a line ending in math (text)',
     async function () {
       assert.equal(
-        micromark('a $$\na\\$ $$ b', {
+        micromark('a \\[\na\\$ \\] b', {
           extensions: [math()],
           htmlExtensions: [mathHtml()]
         }),

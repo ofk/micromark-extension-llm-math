@@ -28,6 +28,8 @@ function tokenizeMathText(effects, ok, nok) {
   const self = this
   /** @type {Token} */
   let token
+  /** @type {number} */
+  let openSequenceCode
 
   return start
 
@@ -58,15 +60,18 @@ function tokenizeMathText(effects, ok, nok) {
    * ```markdown
    * > | \(a\)
    *      ^
+   * > | \[a\]
+   *      ^
    * ```
    *
    * @type {State}
    */
   function sequenceOpen(code) {
-    if (code !== codes.leftParenthesis) {
+    if (code !== codes.leftParenthesis && code !== codes.leftSquareBracket) {
       return nok(code)
     }
 
+    openSequenceCode = code
     effects.consume(code)
     effects.exit('mathTextSequence')
     return between
@@ -150,7 +155,11 @@ function tokenizeMathText(effects, ok, nok) {
    */
   function sequenceClose(code) {
     // Done!
-    if (code === codes.rightParenthesis) {
+    const closeSequenceCode =
+      openSequenceCode === codes.leftParenthesis
+        ? codes.rightParenthesis
+        : codes.rightSquareBracket
+    if (code === closeSequenceCode) {
       effects.consume(code)
       effects.exit('mathTextSequence')
       effects.exit('mathText')
