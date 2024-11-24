@@ -1,4 +1,29 @@
-# micromark-extension-math
+# micromark-extension-llm-math
+
+micromark-extension-llm-math is a fork of
+[micromark-extension-math](https://github.com/micromark/micromark-extension-math)
+that supports TeX formulas output by LLM.
+
+By replacing it, you can process formula notations such as `\(L_C\)` and `\[\nL_C\n\]`.
+
+After installing with `npm install micromark-extension-llm-math`,
+define `resolve.alias` in vite.config.ts.
+
+```js
+export default defineConfig({
+  // :
+  resolve: {
+    alias: {
+      'micromark-extension-math': 'micromark-extension-llm-math'
+    }
+  }
+  // :
+})
+```
+
+Below is the original README.
+
+***
 
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]

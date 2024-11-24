@@ -1,5 +1,5 @@
 /**
- * @import {Options} from 'micromark-extension-math'
+ * @import {Options} from 'micromark-extension-llm-math'
  * @import {Extension} from 'micromark-util-types'
  */
 

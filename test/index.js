@@ -2,14 +2,14 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import katex from 'katex'
 import {micromark} from 'micromark'
-import {math, mathHtml} from 'micromark-extension-math'
+import {math, mathHtml} from 'micromark-extension-llm-math'
 
 const renderToString = katex.renderToString
 
 test('math', async function (t) {
   await t.test('should expose the public api', async function () {
     assert.deepEqual(
-      Object.keys(await import('micromark-extension-math')).sort(),
+      Object.keys(await import('micromark-extension-llm-math')).sort(),
       ['math', 'mathHtml']
     )
   })

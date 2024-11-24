@@ -1,7 +1,7 @@
 {
-  "name": "micromark-extension-math",
+  "name": "micromark-extension-llm-math",
   "version": "3.1.0",
-  "description": "micromark extension to support math (`$C_L$`)",
+  "description": "micromark extension to support math (`$C_L$`, `\\(C_L\\)`)",
   "license": "MIT",
   "keywords": [
     "micromark",
@@ -13,8 +13,8 @@
     "markdown",
     "unified"
   ],
-  "repository": "micromark/micromark-extension-math",
-  "bugs": "https://github.com/micromark/micromark-extension-math/issues",
+  "repository": "ofk/micromark-extension-llm-math",
+  "bugs": "https://github.com/ofk/micromark-extension-llm-math/issues",
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/unified"
