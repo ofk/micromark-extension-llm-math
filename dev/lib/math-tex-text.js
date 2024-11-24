@@ -1,11 +1,5 @@
 /**
- * @typedef {import('micromark-util-types').Construct} Construct
- * @typedef {import('micromark-util-types').TokenizeContext} TokenizeContext
- * @typedef {import('micromark-util-types').Tokenizer} Tokenizer
- * @typedef {import('micromark-util-types').Previous} Previous
- * @typedef {import('micromark-util-types').Resolver} Resolver
- * @typedef {import('micromark-util-types').State} State
- * @typedef {import('micromark-util-types').Token} Token
+ * @import {Construct, Previous, State, Token, TokenizeContext, Tokenizer} from 'micromark-util-types'
  */
 
 import {ok as assert} from 'devlop'
@@ -17,7 +11,8 @@ import {mathText} from './math-text.js'
 export const mathTexText = {
   tokenize: tokenizeMathText,
   resolve: mathText().resolve,
-  previous
+  previous,
+  name: 'mathTexText'
 }
 
 /**

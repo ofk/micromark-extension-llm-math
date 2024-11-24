@@ -506,6 +506,22 @@ test('math', async function (t) {
 
 test('math-tex', async function (t) {
   await t.test(
+    'should skip `mathTexFlow` and `mathTexText` construct if `disable.null` includes `mathTexFlow` and `mathTexText`',
+    async function () {
+      assert.equal(
+        micromark('\\(a\\), \\[b\\]\n\n\\[\nc\n\\]', {
+          extensions: [
+            math(),
+            {disable: {null: ['mathTexFlow', 'mathTexText']}}
+          ],
+          htmlExtensions: [mathHtml()]
+        }),
+        '<p>(a), [b]</p>\n<p>[\nc\n]</p>'
+      )
+    }
+  )
+
+  await t.test(
     'should support backslash-parentheses or brackets by default',
     async function () {
       assert.equal(
