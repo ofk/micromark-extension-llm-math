@@ -1,8 +1,5 @@
 /**
- * @typedef {import('micromark-util-types').Construct} Construct
- * @typedef {import('micromark-util-types').State} State
- * @typedef {import('micromark-util-types').TokenizeContext} TokenizeContext
- * @typedef {import('micromark-util-types').Tokenizer} Tokenizer
+ * @import {Construct, State, TokenizeContext, Tokenizer} from 'micromark-util-types'
  */
 
 import {ok as assert} from 'devlop'
@@ -13,7 +10,8 @@ import {codes, constants, types} from 'micromark-util-symbol'
 /** @type {Construct} */
 export const mathFlow = {
   tokenize: tokenizeMathFenced,
-  concrete: true
+  concrete: true,
+  name: 'mathFlow'
 }
 
 /** @type {Construct} */
