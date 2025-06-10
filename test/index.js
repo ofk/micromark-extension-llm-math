@@ -7,13 +7,6 @@ import {math, mathHtml} from 'micromark-extension-llm-math'
 const renderToString = katex.renderToString
 
 test('math', async function (t) {
-  await t.test('should not break under uncompleted fences', async function () {
-    micromark(`\\[\n   `, {
-      extensions: [math()],
-      htmlExtensions: [mathHtml()]
-    })
-  })
-
   await t.test('should expose the public api', async function () {
     assert.deepEqual(
       Object.keys(await import('micromark-extension-llm-math')).sort(),
@@ -719,6 +712,18 @@ test('math-tex', async function (t) {
       }),
       '<div class="math math-display">' +
         renderToString('', {displayMode: true}) +
+        '</div>'
+    )
+  })
+
+  await t.test('should not break under uncompleted fences', async function () {
+    assert.equal(
+      micromark(`\\[\n `, {
+        extensions: [math()],
+        htmlExtensions: [mathHtml()]
+      }),
+      '<div class="math math-display">' +
+        renderToString(' ', {displayMode: true}) +
         '</div>'
     )
   })
