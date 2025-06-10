@@ -717,10 +717,15 @@ test('math-tex', async function (t) {
   })
 
   await t.test('should not break under uncompleted fences', async function () {
-    micromark(`\\[\n `, {
-      extensions: [math()],
-      htmlExtensions: [mathHtml()]
-    })
+    assert.equal(
+      micromark(`\\[\n `, {
+        extensions: [math()],
+        htmlExtensions: [mathHtml()]
+      }),
+      '<div class="math math-display">' +
+        renderToString(' ', {displayMode: true}) +
+        '</div>'
+    )
   })
 
   await t.test(
