@@ -284,6 +284,10 @@ function tokenizeMathFenced(effects, ok, nok) {
      * @type {State}
      */
     function beforeSequenceClose(code) {
+      if (code === null) {
+        return nok(code)
+      }
+
       effects.enter('mathFlowFence')
       effects.enter('mathFlowFenceSequence')
       effects.consume(code)
