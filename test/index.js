@@ -8,7 +8,7 @@ const renderToString = katex.renderToString
 
 test('math', async function (t) {
   await t.test('should not break under uncompleted fences', async function () {
-    micromark(`\\[\n   `, {
+    micromark(`\\[\n `, {
       extensions: [math()],
       htmlExtensions: [mathHtml()]
     })
