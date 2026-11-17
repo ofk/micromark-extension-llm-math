@@ -675,6 +675,21 @@ test('math-tex', async function (t) {
     )
   })
 
+  await t.test(
+    'should preserve content ending in a bracket in math (flow)',
+    async function () {
+      assert.equal(
+        micromark('\\[\nX]\n\\]', {
+          extensions: [math()],
+          htmlExtensions: [mathHtml()]
+        }),
+        '<div class="math math-display">' +
+          renderToString('X]', {displayMode: true}) +
+          '</div>'
+      )
+    }
+  )
+
   await t.test('should support math (flow) w/o blanks', async function () {
     assert.equal(
       micromark('\\[a\\]', {
