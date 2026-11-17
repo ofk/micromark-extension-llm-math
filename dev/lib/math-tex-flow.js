@@ -284,7 +284,7 @@ function tokenizeMathFenced(effects, ok, nok) {
      * @type {State}
      */
     function beforeSequenceClose(code) {
-      if (code === null) {
+      if (code !== codes.backslash) {
         return nok(code)
       }
 
